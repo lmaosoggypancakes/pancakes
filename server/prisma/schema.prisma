@@ -1,0 +1,30 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgres"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Pancake {
+  id        Int       @id @default(autoincrement())
+  username  String    @unique
+  email     String    @unique
+  createdAt DateTime  @default(now())
+  password  String
+  messages  Message[] @relation(name: "sender")
+  score     Int       @default(0)
+}
+
+model Message {
+  id         Int      @id @default(autoincrement())
+  sender     Pancake  @relation(name: "sender", fields: [senderId], references: [id])
+  senderId   Int
+  receiverId Int
+  text       String
+  createdAt  DateTime @default(now())
+}
